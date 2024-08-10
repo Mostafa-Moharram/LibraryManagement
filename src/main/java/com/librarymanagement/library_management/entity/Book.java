@@ -1,21 +1,50 @@
 package com.librarymanagement.library_management.entity;
 
-public class Book {
-    private Long id;
-    private String isbn;
-    private String title;
-    private String authorName;
-    private int publicationYear;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
-    public Book(Long id, String isbn, String title, String authorName, int publicationYear) {
-        this.id = id;
+@Entity
+public class Book {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Pattern(regexp = "^(?:\\d[\\- ]?){9}[\\dX]$|^(?:\\d[\\- ]?){13}$")
+    private String isbn;
+
+    @NotBlank
+    private String title;
+
+    @NotBlank
+    private String authorName;
+
+    @NotNull
+    @Min(value = 1000)
+    private Integer publicationYear;
+
+    @NotNull
+    @Min(value = 0)
+    private Integer availableCopiesCount;
+    @NotNull
+    @Column(updatable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private Integer borrowedCopiesCount;
+
+    public Book(String isbn, String title, String authorName, int publicationYear, int availableCopiesCount) {
         this.isbn = isbn;
         this.title = title;
         this.authorName = authorName;
         this.publicationYear = publicationYear;
+        this.availableCopiesCount = availableCopiesCount;
+        this.borrowedCopiesCount = 0;
     }
 
     public Book() {
+    }
+
+    public @NotNull Integer getBorrowedCopiesCount() {
+        return borrowedCopiesCount;
     }
 
     public Long getId() {
@@ -56,5 +85,13 @@ public class Book {
 
     public void setPublicationYear(int publicationYear) {
         this.publicationYear = publicationYear;
+    }
+
+    public @NotNull @Min(value = 0) Integer getAvailableCopiesCount() {
+        return availableCopiesCount;
+    }
+
+    public void setAvailableCopiesCount(@NotNull @Min(value = 0) Integer availableCopiesCount) {
+        this.availableCopiesCount = availableCopiesCount;
     }
 }

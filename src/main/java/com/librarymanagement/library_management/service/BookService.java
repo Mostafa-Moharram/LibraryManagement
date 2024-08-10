@@ -2,60 +2,61 @@ package com.librarymanagement.library_management.service;
 
 import com.librarymanagement.library_management.dto.UpsertBookDto;
 import com.librarymanagement.library_management.entity.Book;
+import com.librarymanagement.library_management.repository.BookRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class BookService {
-    private static long newId = 3;    private static Map<Long, Book> mp = initialize();
+    private final BookRepository bookRepository;
 
-    private static Map<Long, Book> initialize() {
-        mp = new HashMap<>();
-        mp.put(1L, new Book(1L, "978-0451524935", "1984", "George Orwell", 1949));
-        mp.put(2L, new Book(2L, "978-0857197689", "The Psychology of Money: Timeless Lessons on Wealth, Greed, and Happiness", "Morgan Housel", 2020));
-        return mp;
+    @Autowired
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
     }
 
     public List<Book> getAllBooks() {
-        return mp.values().stream().toList();
+        return bookRepository.findAll();
     }
 
     public Optional<Book> getBookById(Long Id) {
-        return Optional.ofNullable(mp.get(Id));
+        return bookRepository.findById(Id);
     }
 
     public Book addBook(UpsertBookDto upsertBookDto) {
         Book book = new Book(
-                newId,
                 upsertBookDto.getIsbn(),
                 upsertBookDto.getTitle(),
                 upsertBookDto.getAuthorName(),
-                upsertBookDto.getPublicationYear()
+                upsertBookDto.getPublicationYear(),
+                upsertBookDto.getAvailableCopiesCount()
         );
-        mp.put(newId, book);
-        ++newId;
+        bookRepository.save(book);
         return book;
     }
 
+    @Transactional
     public Optional<Book> updateBook(Long Id, UpsertBookDto upsertBookDto) {
-        Book book = mp.get(Id);
-        if (book == null)
+        Optional<Book> bookOptional = bookRepository.findById(Id);
+        if (bookOptional.isEmpty())
             return Optional.empty();
+        Book book = bookOptional.get();
         book.setIsbn(upsertBookDto.getIsbn());
         book.setTitle(upsertBookDto.getTitle());
         book.setAuthorName(upsertBookDto.getAuthorName());
         book.setPublicationYear(upsertBookDto.getPublicationYear());
+        book.setAvailableCopiesCount(upsertBookDto.getAvailableCopiesCount());
         return Optional.of(book);
     }
 
     public boolean deleteBook(Long Id) {
-        if (!mp.containsKey(Id))
+        if (!bookRepository.existsById(Id))
             return false;
-        mp.remove(Id);
+        bookRepository.deleteById(Id);
         return true;
     }
 }

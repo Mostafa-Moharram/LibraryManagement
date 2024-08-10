@@ -9,24 +9,36 @@ public class UpsertBookDto {
     @Pattern(regexp = "^(?:\\d[\\- ]?){9}[\\dX]$|^(?:\\d[\\- ]?){13}$", message = "Invalid ISBN format. Please enter a valid ISBN-10 or ISBN-13.")
     private String isbn;
 
-    @NotBlank(message = "Title cannot be empty or contain only whitespace.")
+    @NotBlank
     private String title;
 
-    @NotBlank(message = "Author name cannot be empty or contain only whitespace.")
+    @NotBlank
     private String authorName;
 
-    @NotNull(message = "Publication year is required and must be a valid year.")
-    @Min(value = 1000, message = "Publication year must be a valid year (e.g., 1900 or later).")
+    @NotNull
+    @Min(value = 1000)
     private Integer publicationYear;
+    @NotNull
+    @Min(value = 0)
+    private Integer availableCopiesCount;
 
-    public UpsertBookDto(String isbn, String title, String authorName, Integer publicationYear) {
+    public UpsertBookDto(String isbn, String title, String authorName, int publicationYear, int availableCopiesCount) {
         this.isbn = isbn;
         this.title = title;
         this.authorName = authorName;
         this.publicationYear = publicationYear;
+        this.availableCopiesCount = availableCopiesCount;
     }
 
     public UpsertBookDto() {
+    }
+
+    public Integer getAvailableCopiesCount() {
+        return availableCopiesCount;
+    }
+
+    public void setAvailableCopiesCount(Integer availableCopiesCount) {
+        this.availableCopiesCount = availableCopiesCount;
     }
 
     public String getIsbn() {
