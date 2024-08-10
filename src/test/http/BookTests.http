@@ -1,0 +1,56 @@
+@baseUrl = http://localhost:8080/api
+
+### Get all books
+GET {{baseUrl}}/books HTTP/1.1
+
+### Get book with Id 2: The Psychology of Money: Timeless Lessons on Wealth, Greed, and Happiness
+GET {{baseUrl}}/books/2 HTTP/1.1
+
+### Get book with Id 3
+GET {{baseUrl}}/books/3 HTTP/1.1
+
+### Add book
+POST {{baseUrl}}/books HTTP/1.1
+Content-Type: application/json
+
+{
+    "isbn": "978-0140280197",
+    "title": "The 48 Laws of Power",
+    "authorName": "Robert Greene",
+    "publicationYear": 1998
+}
+
+### Add invalid book with no title
+POST {{baseUrl}}/books HTTP/1.1
+Content-Type: application/json
+
+{
+    "isbn": "978-0140280197",
+    "authorName": "Robert Greene",
+    "publicationYear": 1998
+}
+
+### Update book remove `the` from book with Id `3`
+PUT {{baseUrl}}/books/3 HTTP/1.1
+Content-Type: application/json
+
+{
+    "isbn": "978-0140280197",
+    "title": "48 Laws of Power",
+    "authorName": "Robert Greene",
+    "publicationYear": 1998
+}
+
+### Update book with Id `5`, the book doesn't exist.
+PUT {{baseUrl}}/books/5 HTTP/1.1
+Content-Type: application/json
+
+{
+    "isbn": "978-0140280197",
+    "title": "48 Laws of Power",
+    "authorName": "Robert Greene",
+    "publicationYear": 1998
+}
+
+### delete book with Id `3` the book first exists, then no longer does.
+DELETE {{baseUrl}}/books/3 HTTP/1.1
