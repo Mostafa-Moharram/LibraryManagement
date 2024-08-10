@@ -1,0 +1,39 @@
+@baseUrl = http://localhost:8080/api
+
+### Get all patrons
+GET {{baseUrl}}/patrons HTTP/1.1
+
+### Get patron with Id `2`
+GET {{baseUrl}}/patrons/2 HTTP/1.1
+
+### Get person with invalid Id `3`
+GET {{baseUrl}}/patrons/3 HTTP/1.1
+
+### Add new person
+POST {{baseUrl}}/patrons HTTP/1.1
+Content-Type: application/json
+
+{
+    "firstName": "Personfirstname",
+    "lastName": "Personlastname",
+    "dateOfBirth": "1999-09-20",
+    "phoneNumber": "01223456789",
+    "email": "personfirstname.personlastname@domain.com",
+    "address": "some place city country"
+}
+
+### Update person with Id `3`
+PUT {{baseUrl}}/patrons/3 HTTP/1.1
+Content-Type: application/json
+
+{
+    "firstName": "Pfn",
+    "lastName": "Pln",
+    "dateOfBirth": "1999-09-20",
+    "phoneNumber": "01223456789",
+    "email": "personfirstname.personlastname@domain.com",
+    "address": "some place city country"
+}
+
+### Delete person with Id `3`
+DELETE {{baseUrl}}/patrons/3 HTTP/1.1
