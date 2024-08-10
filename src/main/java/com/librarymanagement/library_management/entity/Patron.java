@@ -1,24 +1,45 @@
 package com.librarymanagement.library_management.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 import java.time.LocalDate;
 
+@Entity
 public class Patron {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
+    @Pattern(regexp = "^\\p{Lu}\\p{Ll}*$")
     private String firstName;
+    @NotBlank
+    @Pattern(regexp = "^\\p{Lu}\\p{Ll}*$")
     private String lastName;
+    @NotBlank
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
     private String email;
+    @NotNull
     private LocalDate dateOfBirth;
+    // This pattern matches phone numbers in Egypt. If this thing is international then the validation should be localized to a specific country
+    @NotBlank
+    @Pattern(regexp = "^01[0125]\\d{8}$")
     private String phoneNumber;
+    @NotBlank
     private String address;
 
-    public Patron(Long id, String firstName, String lastName, LocalDate dateOfBirth, String phoneNumber, String email, String address) {
+    public Patron(String firstName, String lastName, LocalDate dateOfBirth, String phoneNumber, String email, String address) {
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.lastName = lastName;
         this.firstName = firstName;
-        this.id = id;
     }
 
     public Patron() {

@@ -2,37 +2,33 @@ package com.librarymanagement.library_management.service;
 
 import com.librarymanagement.library_management.dto.UpsertPatronDto;
 import com.librarymanagement.library_management.entity.Patron;
+import com.librarymanagement.library_management.repository.PatronRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class PatronService {
-    private static final Map<Long, Patron> mp = initialize();
-    private static long newId = 3L;
-    private static Map<Long, Patron> initialize() {
-        Map<Long, Patron> mp = new HashMap<>();
-        mp.put(1L, new Patron(1L, "Mostafa", "Moharram", LocalDate.of(2001, Month.JULY, 14), "01123456789", "moharram.moharram@moharram.com", "St. Area City Country"));
-        mp.put(2L, new Patron(2L, "Some", "Person", LocalDate.of(2000, Month.FEBRUARY, 19), "01023456789", "some.person@sp.com", "St. District Area City Country"));
-        return mp;
+    private final PatronRepository patronRepository;
+
+    @Autowired
+    public PatronService(PatronRepository patronRepository) {
+        this.patronRepository = patronRepository;
     }
 
     public List<Patron> getAllPatrons() {
-        return mp.values().stream().toList();
+        return patronRepository.findAll();
     }
 
     public Optional<Patron> getPatronById(Long Id) {
-        return Optional.ofNullable(mp.get(Id));
+        return patronRepository.findById(Id);
     }
 
     public Patron addPatron(UpsertPatronDto upsertPatronDto) {
         Patron patron = new Patron(
-                newId,
                 upsertPatronDto.getFirstName(),
                 upsertPatronDto.getLastName(),
                 upsertPatronDto.getDateOfBirth(),
@@ -40,15 +36,15 @@ public class PatronService {
                 upsertPatronDto.getEmail(),
                 upsertPatronDto.getAddress()
         );
-        mp.put(newId, patron);
-        ++newId;
-        return patron;
+        return patronRepository.save(patron);
     }
 
+    @Transactional
     public Optional<Patron> updatePatron(Long Id, UpsertPatronDto upsertPatronDto) {
-        Patron patron = mp.get(Id);
-        if (patron == null)
+        Optional<Patron> patronOptional = patronRepository.findById(Id);
+        if (patronOptional.isEmpty())
             return Optional.empty();
+        Patron patron = patronOptional.get();
         patron.setFirstName(upsertPatronDto.getFirstName());
         patron.setLastName(upsertPatronDto.getLastName());
         patron.setDateOfBirth(upsertPatronDto.getDateOfBirth());
@@ -59,10 +55,9 @@ public class PatronService {
     }
 
     public boolean deleteBook(Long Id) {
-        Patron patron = mp.get(Id);
-        if (patron == null)
+        if (!patronRepository.existsById(Id))
             return false;
-        mp.remove(Id);
+        patronRepository.deleteById(Id);
         return true;
     }
 }
