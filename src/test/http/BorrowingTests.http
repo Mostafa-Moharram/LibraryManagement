@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:8080/api
+
+### Borrow a book
+POST {{baseUrl}}/borrow/2/patron/1 HTTP/1.1
+
+### Return a book
+PUT {{baseUrl}}/borrow/2/patron/1 HTTP/1.1

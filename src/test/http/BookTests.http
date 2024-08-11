@@ -17,7 +17,32 @@ Content-Type: application/json
     "isbn": "978-0140280197",
     "title": "The 48 Laws of Power",
     "authorName": "Robert Greene",
-    "publicationYear": 1998
+    "publicationYear": 1998,
+    "availableCopiesCount": 20
+}
+
+### Add book
+POST {{baseUrl}}/books HTTP/1.1
+Content-Type: application/json
+
+{
+    "isbn": "978-0451524935",
+    "title": "1984",
+    "authorName": "George Orwell",
+    "publicationYear": 1949,
+    "availableCopiesCount": 20
+}
+
+### Update book with Id 2, to have only 5 available copies
+PUT {{baseUrl}}/books/2 HTTP/1.1
+Content-Type: application/json
+
+{
+    "isbn": "978-0451524935",
+    "title": "1984",
+    "authorName": "George Orwell",
+    "publicationYear": 1949,
+    "availableCopiesCount": 5
 }
 
 ### Add invalid book with no title

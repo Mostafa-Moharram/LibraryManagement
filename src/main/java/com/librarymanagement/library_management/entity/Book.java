@@ -15,22 +15,17 @@ public class Book {
     @Pattern(regexp = "^(?:\\d[\\- ]?){9}[\\dX]$|^(?:\\d[\\- ]?){13}$")
     @Column(unique = true)
     private String isbn;
-
     @NotBlank
     private String title;
-
     @NotBlank
     private String authorName;
-
     @NotNull
     @Min(value = 1000)
     private Integer publicationYear;
-
     @NotNull
     @Min(value = 0)
     private Integer availableCopiesCount;
     @NotNull
-    @Column(updatable = false, columnDefinition = "INTEGER DEFAULT 0")
     private Integer borrowedCopiesCount;
 
     public Book(String isbn, String title, String authorName, int publicationYear, int availableCopiesCount) {
@@ -41,12 +36,15 @@ public class Book {
         this.availableCopiesCount = availableCopiesCount;
         this.borrowedCopiesCount = 0;
     }
-
     public Book() {
     }
 
     public @NotNull Integer getBorrowedCopiesCount() {
         return borrowedCopiesCount;
+    }
+
+    public void setBorrowedCopiesCount(@NotNull Integer borrowedCopiesCount) {
+        this.borrowedCopiesCount = borrowedCopiesCount;
     }
 
     public Long getId() {
@@ -83,6 +81,10 @@ public class Book {
 
     public int getPublicationYear() {
         return publicationYear;
+    }
+
+    public void setPublicationYear(@NotNull @Min(value = 1000) Integer publicationYear) {
+        this.publicationYear = publicationYear;
     }
 
     public void setPublicationYear(int publicationYear) {
