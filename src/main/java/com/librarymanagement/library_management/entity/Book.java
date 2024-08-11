@@ -12,6 +12,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Pattern(regexp = "^(?:\\d[\\- ]?){9}[\\dX]$|^(?:\\d[\\- ]?){13}$")
     @Column(unique = true)
     private String isbn;
