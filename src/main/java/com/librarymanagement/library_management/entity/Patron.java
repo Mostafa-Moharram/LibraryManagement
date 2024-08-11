@@ -27,6 +27,7 @@ public class Patron {
     // This pattern matches phone numbers in Egypt. If this thing is international then the validation should be localized to a specific country
     @NotBlank
     @Pattern(regexp = "^01[0125]\\d{8}$")
+    @Column(unique = true)
     private String phoneNumber;
     @NotBlank
     private String address;
