@@ -1,0 +1,8 @@
+{
+    "firstName": "Personfirstname",
+    "lastName": "Personlastname",
+    "dateOfBirth": "1999-09-20",
+    "phoneNumber": "01223456789",
+    "email": "personfirstname.personlastname.com",
+    "address": "some place city country"
+}
