@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public class UpsertBookDto {
+    @NotBlank
     @Pattern(regexp = "^(?:\\d[\\- ]?){9}[\\dX]$|^(?:\\d[\\- ]?){13}$", message = "Invalid ISBN format. Please enter a valid ISBN-10 or ISBN-13.")
     private String isbn;
 
