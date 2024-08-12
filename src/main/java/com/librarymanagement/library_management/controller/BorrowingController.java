@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/borrow")
+@RequestMapping("/api")
 public class BorrowingController {
     private final BorrowingService borrowingService;
 
@@ -20,7 +20,7 @@ public class BorrowingController {
         this.borrowingService = borrowingService;
     }
 
-    @PostMapping("/{bookId}/patron/{patronId}")
+    @PostMapping("/borrow/{bookId}/patron/{patronId}")
     public ResponseEntity<?> borrowBook(@PathVariable Long bookId, @PathVariable Long patronId) {
         BorrowingService.BorrowResult result = borrowingService.borrowBook(new PatronBookIdsDto(patronId, bookId));
         if (result.getStatus() == BorrowingService.BorrowResult.NO_BOOK_FOUND)
@@ -42,7 +42,7 @@ public class BorrowingController {
         return ResponseEntity.ok(result.getBorrowing());
     }
 
-    @PutMapping("/{bookId}/patron/{patronId}")
+    @PutMapping("/return/{bookId}/patron/{patronId}")
     public ResponseEntity<?> returnBook(@PathVariable Long bookId, @PathVariable Long patronId) {
         Optional<Borrowing> borrowingOptional = borrowingService.returnBook(new PatronBookIdsDto(patronId, bookId));
         if (borrowingOptional.isPresent())

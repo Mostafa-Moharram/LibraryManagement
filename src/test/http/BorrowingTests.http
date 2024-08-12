@@ -4,4 +4,4 @@
 POST {{baseUrl}}/borrow/2/patron/1 HTTP/1.1
 
 ### Return a book
-PUT {{baseUrl}}/borrow/2/patron/1 HTTP/1.1
+PUT {{baseUrl}}/return/2/patron/1 HTTP/1.1
