@@ -4,7 +4,7 @@
 This project aims to act as a `RESTFUL API` for a `frontend` framework for a browser or mobile application. The project is about a library management system where I user can borrow a book for reading. The books are stored with their number of available copies. The borrowing is stored as a record where it saves when the book is borrowed and the due date. It also stores when the book is returned. The book also maintains the number of borrowed copies that haven't returned yet.
 
 ## UML of the stored data and their relations
-![Stored Data UML](Data%20UML.png)
+![Stored Data UML](DataUML.png)
 
 
 ## API Endpoints
@@ -174,7 +174,7 @@ No book with Id 5 is found.
 #### Note
 the previously laid out constraints in adding also holds when updating.
 
-### DELETE `api/books/{id}`
+### DELETE `/api/books/{id}`
 ```
 DELETE /api/books/1 HTTP/1.1
 ```
@@ -197,5 +197,186 @@ HTTP/1.1 404
 Content-Length: 0
 Date: Mon, 12 Aug 2024 06:22:20 GMT
 Connection: close
+
+```
+
+### POST `/api/patrons`
+Adds a new patron. When requesting, the patron must have all the following properties in the request specified or a bad request is returned. `firstName` and `lastName` also has to follow the format that the first letter is uppercase and the rest are lowercase. Spaces or white characters are neither allowed in `firstName` nor `lastName`. The email has to be in a valid format. Phone number has to be `11` digits starting with either `010`, `011`, `012`, `015`.
+```
+POST /api/patrons HTTP/1.1
+Content-Type: application/json
+
+{
+    "firstName": "Personfirstname",
+    "lastName": "Personlastname",
+    "dateOfBirth": "1999-09-20",
+    "phoneNumber": "01223456789",
+    "email": "personfirstname.personlastname@domain.com",
+    "address": "some place city country"
+}
+```
+Response
+```
+HTTP/1.1 201 
+Location: /api/patrons/1
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 12 Aug 2024 10:51:55 GMT
+Connection: close
+
+{
+  "id": 1,
+  "firstName": "Personfirstname",
+  "lastName": "Personlastname",
+  "email": "personfirstname.personlastname@domain.com",
+  "dateOfBirth": "1999-09-20",
+  "phoneNumber": "01223456789",
+  "address": "some place city country"
+}
+```
+### GET `/api/patrons`
+Returns all patrons.
+```
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 12 Aug 2024 11:04:45 GMT
+Connection: close
+
+[
+  {
+    "id": 1,
+    "firstName": "Personfirstname",
+    "lastName": "Personlastname",
+    "email": "personfirstname.personlastname@domain.com",
+    "dateOfBirth": "1999-09-20",
+    "phoneNumber": "01223456789",
+    "address": "some place city country"
+  }
+]
+```
+### GET `/api/patrons/{id}`
+Returns a patron with the specified `id`. If no patron with the specified `id` exists, a `not found` response is returned.
+#### Valid request
+```
+GET /api/patrons/1 HTTP/1.1
+```
+Response
+```
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 12 Aug 2024 11:01:05 GMT
+Connection: close
+
+{
+  "id": 1,
+  "firstName": "Personfirstname",
+  "lastName": "Personlastname",
+  "email": "personfirstname.personlastname@domain.com",
+  "dateOfBirth": "1999-09-20",
+  "phoneNumber": "01223456789",
+  "address": "some place city country"
+}
+```
+#### Invalid request
+```
+GET /api/patrons/5 HTTP/1.1
+```
+Response
+```
+HTTP/1.1 404 
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 31
+Date: Mon, 12 Aug 2024 11:01:59 GMT
+Connection: close
+
+No patron with Is `5` is found.
+```
+### PUT `/api/patrons/{id}`
+Updates a patron with `id`. If No patron with `id` exists, a `not found` response is returned.
+#### Valid request
+```
+PUT /api/patrons/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "firstName": "Pfn",
+    "lastName": "Pln",
+    "dateOfBirth": "1999-09-20",
+    "phoneNumber": "01223456789",
+    "email": "personfirstname.personlastname@domain.com",
+    "address": "some place city country"
+}
+```
+Response
+```
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 12 Aug 2024 11:06:46 GMT
+Connection: close
+
+{
+  "id": 1,
+  "firstName": "Pfn",
+  "lastName": "Pln",
+  "email": "personfirstname.personlastname@domain.com",
+  "dateOfBirth": "1999-09-20",
+  "phoneNumber": "01223456789",
+  "address": "some place city country"
+}
+```
+#### Invalid request
+```
+PUT /api/patrons/7 HTTP/1.1
+Content-Type: application/json
+
+{
+    "firstName": "Pfn",
+    "lastName": "Pln",
+    "dateOfBirth": "1999-09-20",
+    "phoneNumber": "01223456789",
+    "email": "personfirstname.personlastname@domain.com",
+    "address": "some place city country"
+}
+```
+Response
+```
+HTTP/1.1 404 
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 31
+Date: Mon, 12 Aug 2024 11:10:14 GMT
+Connection: close
+
+No patron with Is `7` is found.
+```
+
+### DELETE `/api/patrons/{id}`
+Deletes a patron with `id`. If no patron with `id` exists, a `not found` is returned.
+#### Valid request
+```
+DELETE /api/patrons/1 HTTP/1.1
+```
+Response
+```
+HTTP/1.1 200 
+Content-Length: 0
+Date: Mon, 12 Aug 2024 11:13:13 GMT
+Connection: close
+
+
+```
+#### Invalid request
+```
+DELETE /api/patrons/27 HTTP/1.1
+```
+Response
+```
+HTTP/1.1 404 
+Content-Length: 0
+Date: Mon, 12 Aug 2024 11:14:39 GMT
+Connection: close
+
 
 ```
