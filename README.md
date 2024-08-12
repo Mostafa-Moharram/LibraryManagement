@@ -380,3 +380,153 @@ Connection: close
 
 
 ```
+### POST `/api/borrow/{bookId}/patron/{patronId}`
+Lends patron with `patronId` book with `bookId`. It decrements `availableCopiesCount` in the lended book, and increments `borrowedCopiesCount`. It assigns `borrowedDate` to the current timestamp, `dueDate` to `2` weeks from now, and `returnDate` to `null`.
+
+#### Valid borrow
+```
+POST /api/borrow/1/patron/1 HTTP/1.1
+```
+Response
+```
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 12 Aug 2024 12:13:24 GMT
+Connection: close
+
+{
+  "id": 1,
+  "book": {
+    "id": 1,
+    "isbn": "978-0735211292",
+    "title": "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+    "authorName": "James Clear",
+    "publicationYear": 2018,
+    "availableCopiesCount": 0,
+    "borrowedCopiesCount": 1
+  },
+  "patron": {
+    "id": 1,
+    "firstName": "Personfirstname",
+    "lastName": "Personlastname",
+    "email": "personfirstname.personlastname@domain.com",
+    "dateOfBirth": "1999-09-20",
+    "phoneNumber": "01223456789",
+    "address": "some place city country"
+  },
+  "borrowDate": "2024-08-12T15:13:24.0498536+03:00",
+  "dueDate": "2024-08-26T15:13:24.0498536+03:00",
+  "returnDate": null
+}
+```
+#### Invalid request: can't lend book to a patron who already borrowed the book and hasn't returned it, yet.
+```
+POST /api/borrow/2/patron/1 HTTP/1.1
+```
+Response
+```
+HTTP/1.1 400 
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 65
+Date: Mon, 12 Aug 2024 12:16:26 GMT
+Connection: close
+
+The books is already borrowed and not returned yet by the patron.
+```
+#### Invalid request can't lend book to a patron and the book has no available copies.
+```
+POST /api/borrow/1/patron/2 HTTP/1.1
+```
+Response
+```
+HTTP/1.1 404 
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 25
+Date: Mon, 12 Aug 2024 12:18:50 GMT
+Connection: close
+
+No available book copies.
+```
+#### Invalid request: can't lend book to nonexistent patron.
+```
+POST /api/borrow/2/patron/71 HTTP/1.1
+```
+Response
+```
+HTTP/1.1 400 
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 21
+Date: Mon, 12 Aug 2024 12:21:07 GMT
+Connection: close
+
+No patron with Id 71.
+```
+#### Invalid request: can't lend nonexistent book to a patron.
+```
+POST /api/borrow/21/patron/1 HTTP/1.1
+```
+Response
+```
+HTTP/1.1 400 
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 19
+Date: Mon, 12 Aug 2024 12:22:12 GMT
+Connection: close
+
+No book with Id 21.
+```
+### PUT `/api/return/{bookId}/patron/{patronId}`
+Accepts return of a borrowed book with `bookId` by a patron with `patronId`. It decrements `borrowedCopiesCount` and increments `availableCopiesCount` in the book with `bookId`. It also assigns `returnDate` to the current timestamp.
+#### Valid request
+```
+PUT /api/return/1/patron/1 HTTP/1.1
+```
+Response
+```
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 12 Aug 2024 12:29:47 GMT
+Connection: close
+
+{
+  "id": 1,
+  "book": {
+    "id": 1,
+    "isbn": "978-0735211292",
+    "title": "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+    "authorName": "James Clear",
+    "publicationYear": 2018,
+    "availableCopiesCount": 1,
+    "borrowedCopiesCount": 0
+  },
+  "patron": {
+    "id": 1,
+    "firstName": "Personfirstname",
+    "lastName": "Personlastname",
+    "email": "personfirstname.personlastname@domain.com",
+    "dateOfBirth": "1999-09-20",
+    "phoneNumber": "01223456789",
+    "address": "some place city country"
+  },
+  "borrowDate": "2024-08-12T12:13:24.049854Z",
+  "dueDate": "2024-08-26T12:13:24.049854Z",
+  "returnDate": "2024-08-12T15:29:47.9213077+03:00"
+}
+
+```
+#### Invalid request: The book isn't currently borrowed by the patron.
+```
+PUT /api/return/1/patron/1 HTTP/1.1
+```
+Response
+```
+HTTP/1.1 404 
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 58
+Date: Mon, 12 Aug 2024 12:31:15 GMT
+Connection: close
+
+No active borrowing of book with Id 1 by patron with Id 1.
+```
